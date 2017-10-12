@@ -4,3 +4,81 @@
 	width: 18px;
 	fill: #444;
 }
+
+/* Modal window styling */
+.map-type .modal-header {
+	background-color: #f9f9f9;
+	text-align: center;
+	padding:35px 50px;
+}
+
+.map-type .modal-header .close {
+	font-size: 50px;
+}
+
+.map-type .modal-header h4 {
+	font-size: 30px;
+	color: white;
+}
+
+.map-type .modal .modal-header h4 span {
+	float: left;
+}
+
+.map-type .modal-body {
+	padding:40px 50px;
+	color: #000;
+}
+
+.map-type .modal-footer {
+	background-color: #f9f9f9;
+}
+
+/* Initially hide all messages */
+.map-type .modal-body .message {
+	display: none;
+}
+
+/* Display only a single header text */
+.map-type .modal .modal-header-text:not(.default) {
+	display: none;
+}
+.map-type .modal.security .modal-header-text.security,
+.map-type .modal.error .modal-header-text.error,
+.map-type .modal.warning .modal-header-text.warning,
+.map-type .modal.alert .modal-header-text.alert,
+.map-type .modal.success .modal-header-text.success {
+	display: block;
+}
+.map-type .modal.security .modal-header-text.default,
+.map-type .modal.error .modal-header-text.default,
+.map-type .modal.warning .modal-header-text.default,
+.map-type .modal.alert .modal-header-text.default,
+.map-type .modal.success .modal-header-text.default {
+	display: none;
+}
+
+/* Header color */
+.map-type .modal.success .modal-header {
+	background-color: #5cb85c;
+}
+
+.map-type .modal .modal-header h4 span.glyphicon {
+	font-size: 38px;
+	font-weight: 400;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	filter: alpha(opacity=20);
+	opacity: .2;
+	float: left;
+	padding-right: 11px;
+}
+
+.map-type .modal.security .modal-header,
+.map-type .modal.warning .modal-header {
+	background-color: #f0ad4e;
+}
+
+.map-type .modal.danger .modal-header {
+	background-color: #d9534f;
+}

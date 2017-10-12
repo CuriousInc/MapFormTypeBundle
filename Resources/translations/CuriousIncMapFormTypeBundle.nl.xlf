@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="" target-language="nl">
+    <body>
+      <trans-unit id="modal.header.text.default">
+        <source>modal.header.text.default</source>
+        <target>Oeps!</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.success">
+        <source>modal.header.text.success</source>
+        <target>Gelukt!</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.security">
+        <source>modal.header.text.security</source>
+        <target>Beveiliging</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.warning">
+        <source>modal.header.text.warning</source>
+        <target>Waarschuwing</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.danger">
+        <source>modal.header.text.danger</source>
+        <target>Let op!</target>
+      </trans-unit>
+      <trans-unit id="modal.button.close">
+        <source>modal.button.close</source>
+        <target>Sluiten</target>
+      </trans-unit>
+      <trans-unit id="search.input.placeholder">
+        <source>search.input.placeholder</source>
+        <target>Type hier uw locatie</target>
+      </trans-unit>
+      <trans-unit id="search.button.submit.text">
+        <source>search.button.submit.text</source>
+        <target>Zoeken</target>
+      </trans-unit>
+      <trans-unit id="search.button.current_location.aria_label">
+        <source>search.button.current_location.aria_label</source>
+        <target>Mijn huidige locatie gebruiken</target>
+      </trans-unit>
+      <trans-unit id="Longitude">
+        <source>Longitude</source>
+        <target>Lengtegraad</target>
+      </trans-unit>
+      <trans-unit id="Latitude">
+        <source>Latitude</source>
+        <target>Breedtegraad</target>
+      </trans-unit>
+      <trans-unit id="Address">
+        <source>Address</source>
+        <target>Adres</target>
+      </trans-unit>
+      <trans-unit id="Street">
+        <source>Street</source>
+        <target>Straat</target>
+      </trans-unit>
+      <trans-unit id="Postal code">
+        <source>Postal code</source>
+        <target>Postcode</target>
+      </trans-unit>
+      <trans-unit id="City">
+        <source>City</source>
+        <target>Plaats</target>
+      </trans-unit>
+      <trans-unit id="City district">
+        <source>City district</source>
+        <target>Stadsdeel</target>
+      </trans-unit>
+      <trans-unit id="City neighbourhood">
+        <source>City neighbourhood</source>
+        <target>Buurt</target>
+      </trans-unit>
+      <trans-unit id="State">
+        <source>State</source>
+        <target>Provincie</target>
+      </trans-unit>
+      <trans-unit id="Country">
+        <source>Country</source>
+        <target>Land</target>
+      </trans-unit>
+      <trans-unit id="message.location_service.alert_no_secure_connection">
+        <source>message.location_service.alert_no_secure_connection</source>
+        <target>Locatiediensten kunnen enkel lokaal gebruikt worden of over een beveiligde verbinding met HTTPS.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

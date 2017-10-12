@@ -57,6 +57,7 @@ class MapType extends AbstractType
                     'width'  => '100%',
                     'height' => '400px',
                 ],
+                'translation_domain' => 'CuriousIncMapFormTypeBundle'
             ]
         );
     }

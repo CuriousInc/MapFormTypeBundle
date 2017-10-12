@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="">
+    <body>
+      <trans-unit id="modal.header.text.default">
+        <source>modal.header.text.default</source>
+        <target>Oops!</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.success">
+        <source>modal.header.text.success</source>
+        <target>Success!</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.security">
+        <source>modal.header.text.security</source>
+        <target>Security</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.warning">
+        <source>modal.header.text.warning</source>
+        <target>Warning</target>
+      </trans-unit>
+      <trans-unit id="modal.header.text.danger">
+        <source>modal.header.text.danger</source>
+        <target>Caution!</target>
+      </trans-unit>
+      <trans-unit id="modal.button.close">
+        <source>modal.button.close</source>
+        <target>Close</target>
+      </trans-unit>
+      <trans-unit id="search.input.placeholder">
+        <source>search.input.placeholder</source>
+        <target>Look for a location</target>
+      </trans-unit>
+      <trans-unit id="search.button.submit.text">
+        <source>search.button.submit.text</source>
+        <target>Search</target>
+      </trans-unit>
+      <trans-unit id="search.button.current_location.aria_label">
+        <source>search.button.current_location.aria_label</source>
+        <target>Use my current location</target>
+      </trans-unit>
+      <trans-unit id="Longitude">
+        <source>Longitude</source>
+        <target>Longitude</target>
+      </trans-unit>
+      <trans-unit id="Latitude">
+        <source>Latitude</source>
+        <target>Latitude</target>
+      </trans-unit>
+      <trans-unit id="Address">
+        <source>Address</source>
+        <target>Address</target>
+      </trans-unit>
+      <trans-unit id="Street">
+        <source>Street</source>
+        <target>Street</target>
+      </trans-unit>
+      <trans-unit id="Postal code">
+        <source>Postal code</source>
+        <target>Postal code</target>
+      </trans-unit>
+      <trans-unit id="City">
+        <source>City</source>
+        <target>City</target>
+      </trans-unit>
+      <trans-unit id="City district">
+        <source>City district</source>
+        <target>District</target>
+      </trans-unit>
+      <trans-unit id="City neighbourhood">
+        <source>City neighbourhood</source>
+        <target>Neighbourhood</target>
+      </trans-unit>
+      <trans-unit id="State">
+        <source>State</source>
+        <target>State/Province</target>
+      </trans-unit>
+      <trans-unit id="Country">
+        <source>Country</source>
+        <target>Country</target>
+      </trans-unit>
+      <trans-unit id="message.location_service.alert_no_secure_connection">
+        <source>message.location_service.alert_no_secure_connection</source>
+        <target>Location services can only be used locally or on a secured connection over https.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

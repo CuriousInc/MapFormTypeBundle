@@ -23,8 +23,12 @@ class Configuration implements ConfigurationInterface
         // Bundles configuration parameters
         $rootNode
             ->children()
-            ->scalarNode('example')
-            ->end()
+                ->arrayNode('map_type')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('translation')->cannotBeEmpty()->defaultValue('CuriousIncMapFormTypeBundle')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

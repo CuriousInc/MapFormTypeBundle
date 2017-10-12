@@ -6,7 +6,12 @@
  * @author j63 <jwoudstr@gmail.com>
  */
 
-var CuriousMap = function (options) {
+var CuriousMap = function(options) {
+
+  var $this = this;
+
+  this.formId = options.formId;
+
   this.lat = options.latitude;
   this.long = options.longitude;
   this.zoom = options.zoom;
@@ -17,6 +22,13 @@ var CuriousMap = function (options) {
 
   // set up the map
   this.map = new L.Map(this.mapId);
+
+  // SnapToLocation button trigger
+  if (undefined !== options.snapButtonId) {
+    $(document).on('click', `#${options.snapButtonId}`, function() {
+      $this.onSnapToLocationPressed();
+    });
+  }
 
   // create the tile layer with correct attribution
   var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -33,7 +45,6 @@ var CuriousMap = function (options) {
   // Set form fields
   this.setMarkerFormFields();
 
-  var $this = this;
   L.Control.geocoder({defaultMarkGeocode: false}).on('markgeocode', function(e) {
     var position = e.geocode.center;
     $this.updateMap(position);
@@ -76,4 +87,29 @@ CuriousMap.prototype.updateMap = function(position) {
 CuriousMap.prototype.setMarkerFormFields = function() {
   $(this.latId).val(this.marker.getLatLng().lat);
   $(this.longId).val(this.marker.getLatLng().lng);
+};
+
+/**
+ * EventHandler for when the SnapToCurrentLocation button is pressed
+ */
+CuriousMap.prototype.onSnapToLocationPressed = function() {
+  var bootstrapJsIsLoaded = (typeof $().modal === 'function')
+
+  if (window.location.protocol === 'https:') {
+    // Locate device's location on the map
+    this.map.locate({
+      watch: true,
+      enableHighAccuracy: true,
+    });
+  } else if (bootstrapJsIsLoaded) {
+    // Show a warning that this functionality does not work over http
+    var $modal = $(`#${this.formId}_modal`)
+      .modal()
+      .addClass('security')
+      .find('.alert_no_secure_connection')
+      .show();
+  } else {
+    // Fallback for when bootstrap is not loaded
+    alert('For security reasons, location will not be retreived over an insecure connection');
+  }
 };
