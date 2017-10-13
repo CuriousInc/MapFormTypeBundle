@@ -64,7 +64,7 @@
       </trans-unit>
       <trans-unit id="City district">
         <source>City district</source>
-        <target>Stadsdeel</target>
+        <target>Wijk</target>
       </trans-unit>
       <trans-unit id="City neighbourhood">
         <source>City neighbourhood</source>
