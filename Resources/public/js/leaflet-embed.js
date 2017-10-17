@@ -13,7 +13,7 @@ var CuriousMap = function (options) {
 
   // Set defaults
   this.lat = options.defaults.latitude;
-  this.long = options.defaults.longitude;
+  this.lng = options.defaults.longitude;
   this.zoom = options.defaults.zoom;
 
   // Initialise Map
@@ -21,12 +21,11 @@ var CuriousMap = function (options) {
   this.initialiseBaseLayer(options.baseLayer);
   this.initialiseOverlays(options.overlays);
 
-  this.map.setView(new L.LatLng(this.lat, this.long), this.zoom);
-  this.updateMarker();
-
   // Initialise CuriousMap
   this.initialiseSearchFields();
   this.initialiseFormFields(options.fields);
+  this.updateMarker();
+  this.map.setView(new L.LatLng(this.lat, this.lng), this.zoom);
   this.initialiseTriggers();
   this.focus();
 };
@@ -38,8 +37,8 @@ var CuriousMap = function (options) {
  */
 CuriousMap.prototype.updateLocation = function (position) {
   this.lat = position.lat;
-  this.long = position.lng;
-  this.$marker.setLatLng(position, { draggable: 'true' });
+  this.lng = position.lng;
+  this.$marker.setLatLng(position, {draggable: 'true'});
   this.map.panTo(position);
   this.updateFormFields(position);
 };
@@ -61,46 +60,25 @@ CuriousMap.prototype.updateFormFields = function (position) {
     $this.fields.latitude.$field.val(position.lat);
     $this.fields.longitude.$field.val(position.lng);
 
-    // Update additional address data
-    if (data.length !== 0 && typeof data.address !== 'undefined') {
+    if (data && data.address) {
+      var street = data.address.footway || data.address.road || '';
+      var houseNr = data.address.house_number || '';
+      var postCode = data.address.postcode || '';
+      var neighbourhood = data.address.neighbourhood || '';
+      var district = data.address.residential || data.address.industrial || data.address.district || data.address.suburb || '';
+      var city = data.address.village || data.address.town || data.address.city || '';
+      var state = data.address.province || data.address.state || '';
+      var country = data.address.country || '';
+      var address = street + ' ' + houseNr + ' ' + city;
 
-      // Populate the actual fields
-      if ($this.fields.address !== undefined) {
-        $this.fields.address.$field.val(data.display_name);
-      }
-      if ($this.fields.street !== undefined) {
-        $this.fields.street.$field.val(data.address.road);
-      }
-      if ($this.fields.postal_code !== undefined) {
-        $this.fields.postal_code.$field.val(data.address.postcode);
-      }
-      if ($this.fields.city !== undefined) {
-        var city = data.address.city;
-        if (typeof data.address.town !== 'undefined') {
-          city = data.address.town;
-        } else if (typeof data.address.village !== 'undefined') {
-          city = data.address.village;
-        }
-        $this.fields.city.$field.val(city);
-      }
-      if ($this.fields.city_district !== undefined) {
-        var district = data.address.suburb;
-        if (typeof data.address.residential !== 'undefined') {
-          district = data.address.residential;
-        } else if (typeof data.address.industrial !== 'undefined') {
-          district = data.address.industrial;
-        }
-        $this.fields.city_district.$field.val(district);
-      }
-      if ($this.fields.city_neighbourhood !== undefined) {
-        $this.fields.city_neighbourhood.$field.val(data.address.neighbourhood);
-      }
-      if ($this.fields.state !== undefined) {
-        $this.fields.state.$field.val(data.address.state);
-      }
-      if ($this.fields.country !== undefined) {
-        $this.fields.country.$field.val(data.address.country);
-      }
+      if ($this.fields.street) $this.fields.street.$field.val(street);
+      if ($this.fields.address) $this.fields.address.$field.val(address);
+      if ($this.fields.postal_code) $this.fields.postal_code.$field.val(postCode);
+      if ($this.fields.city) $this.fields.city.$field.val(city);
+      if ($this.fields.city_district) $this.fields.city_district.$field.val(district);
+      if ($this.fields.city_neighbourhood) $this.fields.city_neighbourhood.$field.val(neighbourhood);
+      if ($this.fields.state) $this.fields.state.$field.val(state);
+      if ($this.fields.country) $this.fields.country.$field.val(country);
     }
   });
 };
@@ -216,6 +194,9 @@ CuriousMap.prototype.initialiseFormFields = function (fields) {
     options.$field = $(`#${$this.formId}_${options.name}`);
     $this.fields[name] = options;
   });
+
+  this.lat = this.fields.latitude.$field.val() || this.lat;
+  this.lng = this.fields.longitude.$field.val() || this.lng;
 };
 
 /**
@@ -254,7 +235,7 @@ CuriousMap.prototype.initialiseTriggers = function () {
  * Update the marker according to current latitude and longitude
  */
 CuriousMap.prototype.updateMarker = function () {
-  this.$marker = L.marker([this.lat, this.long], { draggable: 'true' }).addTo(this.map);
+  this.$marker = L.marker([this.lat, this.lng], { draggable: 'true' }).addTo(this.map);
 };
 
 /**
