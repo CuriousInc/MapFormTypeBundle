@@ -38,7 +38,7 @@ var CuriousMap = function (options) {
 CuriousMap.prototype.updateLocation = function (position) {
   this.lat = position.lat;
   this.lng = position.lng;
-  this.$marker.setLatLng(position, {draggable: 'true'});
+  this.$marker.setLatLng(position, { draggable: 'true' });
   this.map.panTo(position);
   this.updateFormFields(position);
 };
@@ -57,26 +57,27 @@ CuriousMap.prototype.updateFormFields = function (position) {
 
   $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + position.lat + '&lon=' + position.lng + '&zoom=18&addressdetails=1&limit=1&format=json', function (data) {
     // Update the values that are always present
-    $this.fields.latitude.$field.val(position.lat);
-    $this.fields.longitude.$field.val(position.lng);
+    $this.fields.latitude.$field.val(position.lat || $this.fields.latitude.$field.val());
+    $this.fields.longitude.$field.val(position.lng || $this.fields.longitude.$field.val());
 
+    // Process address information
     if (data && data.address) {
       var street = data.address.footway || data.address.road || '';
-      var houseNr = data.address.house_number || '';
+      var houseNumber = data.address.house_number || '';
       var postCode = data.address.postcode || '';
       var neighbourhood = data.address.neighbourhood || '';
       var district = data.address.residential || data.address.industrial || data.address.district || data.address.suburb || '';
       var city = data.address.village || data.address.town || data.address.city || '';
       var state = data.address.province || data.address.state || '';
       var country = data.address.country || '';
-      var address = street + ' ' + houseNr + ' ' + city;
 
+      // Populate input fields if configured
       if ($this.fields.street) $this.fields.street.$field.val(street);
-      if ($this.fields.address) $this.fields.address.$field.val(address);
+      if ($this.fields.address) $this.fields.address.$field.val(street + ' ' + houseNumber + ', ' + city);
       if ($this.fields.postal_code) $this.fields.postal_code.$field.val(postCode);
-      if ($this.fields.city) $this.fields.city.$field.val(city);
-      if ($this.fields.city_district) $this.fields.city_district.$field.val(district);
       if ($this.fields.city_neighbourhood) $this.fields.city_neighbourhood.$field.val(neighbourhood);
+      if ($this.fields.city_district) $this.fields.city_district.$field.val(district);
+      if ($this.fields.city) $this.fields.city.$field.val(city);
       if ($this.fields.state) $this.fields.state.$field.val(state);
       if ($this.fields.country) $this.fields.country.$field.val(country);
     }
