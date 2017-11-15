@@ -126,6 +126,12 @@ CuriousMap.prototype.initialiseTriggers = function () {
   this.$searchBtn.on('click', function () {
     $this.searchAddress($this.$searchField.val());
   });
+
+  // When SnapToLocation succesfull
+  this.$map.on('locationfound', function (e) {
+    $this.updateLocation(e.latlng);
+  });
+
 };
 
 /**
