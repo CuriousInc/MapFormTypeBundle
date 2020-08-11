@@ -44,10 +44,9 @@ var GeoCoder = function (options) {
  * Resolves the position to an address, using the configured geocoder
  *
  * @param position
+ * @param callback
  */
 GeoCoder.prototype.resolve = function (position, callback) {
-  var $this = this;
-
   this.geocoder = this.geocoders[0];
   // Go through geocoders least- to most generic:
   var len = this.geocoders.length - 1;
@@ -61,58 +60,11 @@ GeoCoder.prototype.resolve = function (position, callback) {
     }
   }
 
-  // Perform the geocode with the selected geocoder:
-  $.getJSON(this.geocoder.url + 'lat=' + position.lat + '&lon=' + position.lng + this.geocoder.extraArgs, function (data)
+  // Perform the reverse geocode with the selected geocoder:
+  $.getJSON(this.geocoder.reverseGeocodeUrl + 'lat=' + position.lat + '&lon=' + position.lng + this.geocoder.extraArgs, function (data)
   {
-    if (data && data.address) {
+    if (data) {
       callback(data.address);
-    } else if (data && data.type === 'FeatureCollection' && data.features.length) {
-      // In case of Amsterdam Geosearch, do secondary lookup with the id of the road found in the first lookup
-      var roadId;
-      for (var i = 0; i < data.features.length; i++) {
-        if (data.features[i].properties.opr_type === 'Weg') {
-          // We found the first object of type 'Weg'
-          roadId = data.features[i].properties.id;
-          break;
-        }
-      }
-      if (roadId) {
-        $.getJSON('https://api.data.amsterdam.nl/bag/nummeraanduiding/?locatie=' + position.lat + ',' + position.lng +
-          ',100&openbare_ruimte=' + roadId + '&detailed=1',
-          function(data2) {
-            // The first entry is closest, by definition:
-            if (data2.results.length >= 1) {
-              var item = data2.results[0];
-              callback({
-                house_number: item.huisnummer,
-                road: item.openbare_ruimte._display,
-                postcode: item.postcode,
-                city: item.woonplaats._display,
-                district: item.buurtcombinatie.vollcode + ' - ' + item.buurtcombinatie.naam,
-                suburb: item.buurtcombinatie.vollcode + ' - ' + item.buurtcombinatie.naam,
-                neighbourhood: item.buurt.code + ' - ' + item.buurt.naam
-              });
-            } else {
-              // In case we get no house numbers (e.g. on a road through forest), only give road name:
-              callback({
-                road: data.features[0].properties.display
-              });
-            }
-          });
-      } else {
-        // In case we do not get suitable opr_type, give information of nearest object:
-        callback({
-          road: data.features[0].properties.display
-        });
-      }
-    } else {
-      // Not found, use fallback GeoCoder
-      var configuredGeoCoder = $this.geocoder;
-      $this.geocoder = $this.geocoders[0];
-      // Resolve with different geocoder:
-      $this.resolve(position, callback);
-      // Restore the configured GeoCoder:
-      $this.geocoder = configuredGeoCoder;
     }
   });
 };
@@ -238,7 +190,7 @@ CuriousMap.prototype.updateLocation = function (position) {
 
   // Update all linked elements according to newly set coordinates
   this.$marker.setLatLng(position, { draggable: 'true' });
-  this.$map.panTo(position);
+  this.$map.setView(position, 18);
   this.updateFormFields(position);
   this.updateGeoJsonLayers();
 };
@@ -258,31 +210,18 @@ CuriousMap.prototype.updateFormFields = function (position) {
   $this.fields.longitude.$field.val(position.lng);
 
   // Perform reverse address lookup
-  // $.getJSON('https://nominatim.openstreetmap.org/reverse?lat=' + position.lat + '&lon=' + position.lng + '&zoom=18&addressdetails=1&limit=1&format=json', function (data) {
-  this.geocoder.resolve(position, function (callback) {
-    var address = callback;
-    // Process address information
-    if (address) {
-      var houseNumber = address.house_number || '';
-      var street = address.footway || address.road || '';
-      var postCode = address.postcode || '';
-      var city = address.city || address.suburb || '';
-      var district = address.city ? address.suburb || '' : address.district || '';
-      var neighbourhood = address.neighbourhood || address.residential || address.industrial || '';
-      var state = address.province || address.state || '';
-      var country = address.country || '';
+  this.geocoder.resolve(position, function (address) {
+    if ($this.fields.address) {
+      var cityStreetHousenumber = $this.parseAddress(address.city, address.street, address.streetNumber);
+      $this.fields.address.$field.val(cityStreetHousenumber);
+    }
 
-      // Populate input fields if configured
-      if ($this.fields.address) $this.fields.address.$field.val($this.parseAddress(city, street, houseNumber));
-      if ($this.fields.street) $this.fields.street.$field.val(street);
-      if ($this.fields.postal_code) $this.fields.postal_code.$field.val(postCode);
-      if ($this.fields.city) $this.fields.city.$field.val(city);
-      if ($this.fields.city_district) $this.fields.city_district.$field.val(district);
-      if ($this.fields.city_neighbourhood) $this.fields.city_neighbourhood.$field.val(neighbourhood);
-      if ($this.fields.state) $this.fields.state.$field.val(state);
-      if ($this.fields.country) $this.fields.country.$field.val(country);
-    } else {
-      // We did not get a valid address from our geocoder
+    if ($this.fields.city_district) {
+      $this.fields.city_district.$field.val(address.district);
+    }
+
+    if ($this.fields.city_neighbourhood) {
+      $this.fields.city_neighbourhood.$field.val(address.neighbourhood);
     }
   });
 };
@@ -685,32 +624,12 @@ CuriousMap.prototype.searchAddress = function (address) {
 
   var position;
 
-  $.getJSON('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + address, function (data) {
+  $.getJSON('/geocode?address=' + address, function (data) {
     if (data.length) {
-      position = new L.LatLng(data[0].lat, data[0].lon);
+      position = new L.LatLng(data[0].point.lat, data[0].point.long);
       $this.updateLocation(position);
-      $this.$map.setZoom($this.determineZoomLevel(data[0].type));
     }
   });
-};
-
-/**
- * Determine appropriate zoom-level based on information level-type (e.g. 'city') of a JSON response
- */
-CuriousMap.prototype.determineZoomLevel = function (type) {
-  var level;
-  if (type === 'house' || type === 'residential') {
-    level = 18;
-  } else if (type === 'neighbourhood') {
-    level = 16;
-  } else if (type === 'city') {
-    level = 13;
-  } else if (type === 'administrative') {
-    level = 11;
-  } else {
-    level = 8;
-  }
-  return level;
 };
 
 /**
@@ -751,15 +670,23 @@ CuriousMap.prototype.snapToLocation = function () {
  * or street (houseNumber if available), city
  */
 CuriousMap.prototype.parseAddress = function (city, street, houseNumber) {
-  if (street.length && city.length) {
-    city = ', ' + city;
+  str = ''
+
+  if (street) {
+    str += street;
+
+    if (houseNumber) {
+      str += ' ' + houseNumber
+    }
+
+    if (city) {
+      str += ', '
+    }
   }
 
-  if (street.length && houseNumber !== undefined) {
-    houseNumber = ' ' + houseNumber;
-  } else if (!street.length && houseNumber.length) {
-    houseNumber = '';
+  if (city) {
+    str += city;
   }
 
-  return street + houseNumber + city;
+  return str;
 };
